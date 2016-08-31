@@ -68,7 +68,7 @@ Csv.prototype.parse = function(file) {
     var fields = this.requiredFields.concat(this.optionalFields)
     for (var i in fields)
       if (! ~ results.meta.fields.indexOf(fields[i]))
-        throw 'CSV must contain the following headers '+fields
+        throw `Missing field ${fields[i]}. CSV must contain the following headers ${fields}`
   }).then(_ => {
     return parse(file)
   }).then(results => {
@@ -91,7 +91,8 @@ Csv.prototype.unparse = function(name, arr) {
     //Alphabetically order keys
     var unsorted = nested2flat(row)
     var sorted   = {}
-    Object.keys(unsorted).sort().forEach(key => sorted[key] = unsorted[key])
+    var fields   = Object.keys(unsorted).concat(this.requiredFields).concat(this.optionalFields)
+    fields.sort().forEach(key => sorted[key] = unsorted[key])
     return sorted
   }))
   let file = new Blob([flat], {type:'text/csv;charset=utf-8;'})
