@@ -57,7 +57,7 @@ function parse(file, rows) {
     })
 }
 
-window.Csv = function (requiredFields, optionalFields) {
+var Csv = function (requiredFields, optionalFields) {
     this.requiredFields = requiredFields
     this.optionalFields = optionalFields
 }
