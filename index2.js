@@ -1,4 +1,4 @@
-import Papa from 'papaparse';
+
 
 function flat2nested(obj) {
     var res = {}
@@ -10,7 +10,6 @@ function flat2nested(obj) {
             if (i < arr.length - 1) {
                 curr = curr[key] = curr[key] || {}; continue
             }
-
             if (typeof obj[path] == 'string')
                 obj[path] = obj[path].trim()
 
@@ -20,29 +19,29 @@ function flat2nested(obj) {
     return res
 }
 
-var nested2flat = function (obj) {
-    var flat = {}
+// var nested2flat = function (obj) {
+//     var flat = {}
 
-    for (var i in obj) {
+//     for (var i in obj) {
 
-        if (obj[i] === null || typeof obj[i] != 'object') {
-            flat[i] = obj[i]; continue
-        }
+//         if (obj[i] === null || typeof obj[i] != 'object') {
+//             flat[i] = obj[i]; continue
+//         }
 
-        var flatObject = nested2flat(obj[i])
-        var delimited = i && !Array.isArray(obj)
-        for (var j in flatObject) {
+//         var flatObject = nested2flat(obj[i])
+//         var delimited = i && !Array.isArray(obj)
+//         for (var j in flatObject) {
 
-            key = delimited ? i + '.' + j : j
+//             key = delimited ? i + '.' + j : j
 
-            flat[key]
-                ? flat[key] += ';' + flatObject[j]
-                : flat[key] = flatObject[j]
-        }
-    }
+//             flat[key]
+//                 ? flat[key] += ';' + flatObject[j]
+//                 : flat[key] = flatObject[j]
+//         }
+//     }
 
-    return flat
-}
+//     return flat
+// }
 
 function parse(file, rows) {
     return new Promise((resolve, reject) => {
@@ -57,44 +56,30 @@ function parse(file, rows) {
     })
 }
 
-var Csv = function (requiredFields, optionalFields) {
-    this.requiredFields = requiredFields
-    this.optionalFields = optionalFields
-}
-
-
-export function toJSON(file) {
-    return parse(file, 1).then(results => {
-        var fields = this.requiredFields.concat(this.optionalFields)
-        for (var i in fields)
-            if (! ~results.meta.fields.indexOf(fields[i]))
-                throw `Missing field ${fields[i]}. CSV must contain the following headers ${fields}`
-    }).then(_ => {
-        return parse(file)
+function toJSON(file) {
+    return parse(file, 0).then(results => {
+        console.log("results after first then", results.data);
+        return results;
     }).then(results => {
         for (var i in results.data) {
-            for (var j in this.requiredFields) {
-                if (!results.data[i][this.requiredFields[j]])
-                    throw 'CSV missing require value ' + this.requiredFields[j] + ' on line ' + i
-            }
-
             results.data[i] = flat2nested(results.data[i])
+            console.log("datai is", results.data[i]);
         }
         var final = results.data.reverse()
-        console.log(final);
+        console.log("final is:", final);
     })
 }
 
-export function toCSV(name, arr) {
-    //Flatten object
-    //TODO some sort of check for all required and optional fields
-    let flat = Papa.unparse(arr.map(row => {
-        //Alphabetically order keys
-        var unsorted = nested2flat(row)
-        var sorted = {}
-        var fields = Object.keys(unsorted).concat(this.requiredFields).concat(this.optionalFields)
-        fields.sort().forEach(key => sorted[key] = unsorted[key])
-        return sorted
-    }))
-    console.log(flat);
-}
+// function toCSV(name, arr) {
+//     //Flatten object
+//     //TODO some sort of check for all required and optional fields
+//     let flat = Papa.unparse(arr.map(row => {
+//         //Alphabetically order keys
+//         var unsorted = nested2flat(row)
+//         var sorted = {}
+//         var fields = Object.keys(unsorted).concat(this.requiredFields).concat(this.optionalFields)
+//         fields.sort().forEach(key => sorted[key] = unsorted[key])
+//         return sorted
+//     }))
+//     console.log(flat);
+// }
