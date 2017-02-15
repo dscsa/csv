@@ -51,6 +51,9 @@ function parse(file, rows) {
             preview: rows,
             complete: function (results, file) {
                 resolve(results)
+            },
+            error: function (err, file) {
+                console.log("error encountered when parsing", err);
             }
         })
     })
@@ -61,6 +64,7 @@ function toJSON(file) {
         console.log("results after first then", results.data);
         return results;
     }).then(results => {
+        if (results.errors) return handleParseError(results.errors);
         for (var i in results.data) {
             results.data[i] = flat2nested(results.data[i])
             console.log("datai is", results.data[i]);
@@ -68,6 +72,13 @@ function toJSON(file) {
         var final = results.data.reverse()
         console.log("final is:", final);
     })
+}
+
+function handleParseError(errors) {
+    for (var i in errors) {
+        console.log(errors[i].message);
+    }
+    
 }
 
 // function toCSV(name, arr) {
