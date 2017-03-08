@@ -59,27 +59,35 @@ function parse(file, rows) {
     })
 }
 
-function toJSON(file) {
+function toJSON(file, callback) {
     return parse(file, 0).then(results => {
         console.log("results after first then", results.data);
         return results;
     }).then(results => {
-        if (results.errors) return handleParseError(results.errors);
+        //if (results.errors) return handleParseError(results.errors);
         for (var i in results.data) {
             results.data[i] = flat2nested(results.data[i])
             console.log("datai is", results.data[i]);
         }
         var final = results.data.reverse()
-        console.log("final is:", final);
+        return callback(final); //  hand off parsed json to upload function returns a promise
+    }).then(dbresults => {
+        // dbresults will be an array or successes and errors
+        // how are we specifying user action for skip, download csv, etc.
+        if(1 /**download all data including original rows**/) {
+            window.open(file) //just return original file
+        }
+        if(2 /**download only rows with errors**/) {
+            return promise.then(rows => rows.filter(row => row.error))
+        }
+        if(3 /** download rows that were successfully uplaoded*/) {
+            return promise.then(rows => rows.filter(row => row.ok))  
+        }
+        return // none of the above
+
     })
 }
 
-function handleParseError(errors) {
-    for (var i in errors) {
-        console.log(errors[i].message);
-    }
-    
-}
 
 // function toCSV(name, arr) {
 //     //Flatten object
