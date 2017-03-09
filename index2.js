@@ -19,29 +19,25 @@ function flat2nested(obj) {
     return res
 }
 
-// var nested2flat = function (obj) {
-//     var flat = {}
+var nested2flat = function (obj) {
+    var flat = {}
+    for (var i in obj) {
+        if (obj[i] === null || typeof obj[i] != 'object') {
+            flat[i] = obj[i]; continue
+        }
+        var flatObject = nested2flat(obj[i])
+        var delimited = i && !Array.isArray(obj)
+        for (var j in flatObject) {
 
-//     for (var i in obj) {
+            key = delimited ? i + '.' + j : j
 
-//         if (obj[i] === null || typeof obj[i] != 'object') {
-//             flat[i] = obj[i]; continue
-//         }
-
-//         var flatObject = nested2flat(obj[i])
-//         var delimited = i && !Array.isArray(obj)
-//         for (var j in flatObject) {
-
-//             key = delimited ? i + '.' + j : j
-
-//             flat[key]
-//                 ? flat[key] += ';' + flatObject[j]
-//                 : flat[key] = flatObject[j]
-//         }
-//     }
-
-//     return flat
-// }
+            flat[key]
+                ? flat[key] += ';' + flatObject[j]
+                : flat[key] = flatObject[j]
+        }
+    }
+    return flat
+}
 
 function parse(file, rows) {
     return new Promise((resolve, reject) => {
@@ -89,16 +85,17 @@ function toJSON(file, callback) {
 }
 
 
-// function toCSV(name, arr) {
-//     //Flatten object
-//     //TODO some sort of check for all required and optional fields
-//     let flat = Papa.unparse(arr.map(row => {
-//         //Alphabetically order keys
-//         var unsorted = nested2flat(row)
-//         var sorted = {}
-//         var fields = Object.keys(unsorted).concat(this.requiredFields).concat(this.optionalFields)
-//         fields.sort().forEach(key => sorted[key] = unsorted[key])
-//         return sorted
-//     }))
-//     console.log(flat);
-// }
+function toCSV(name, arr) {
+    //Flatten object
+    //TODO some sort of check for all required and optional fields
+    let flat = Papa.unparse(arr.map(row => {
+        //Alphabetically order keys
+        var unsorted = nested2flat(row)
+        var sorted = {}
+        var fields = Object.keys(unsorted).concat(this.requiredFields).concat(this.optionalFields)
+        fields.sort().forEach(key => sorted[key] = unsorted[key])
+        return sorted
+    }))
+
+    //maintain user download workflow?
+}
