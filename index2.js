@@ -70,14 +70,14 @@ function toJSON(file, callback) {
     }).then(dbresults => {
         // dbresults will be an array or successes and errors
         // how are we specifying user action for skip, download csv, etc.
-        if(1 /**download all data including original rows**/) {
+        if (1 /**download all data including original rows**/) {
             window.open(file) //just return original file
         }
-        if(2 /**download only rows with errors**/) {
+        if (2 /**download only rows with errors**/) {
             return promise.then(rows => rows.filter(row => row.error))
         }
-        if(3 /** download rows that were successfully uplaoded*/) {
-            return promise.then(rows => rows.filter(row => row.ok))  
+        if (3 /** download rows that were successfully uplaoded*/) {
+            return promise.then(rows => rows.filter(row => row.ok))
         }
         return // none of the above
 
@@ -86,8 +86,6 @@ function toJSON(file, callback) {
 
 
 function toCSV(name, arr) {
-    //Flatten object
-    //TODO some sort of check for all required and optional fields
     let flat = Papa.unparse(arr.map(row => {
         //Alphabetically order keys
         var unsorted = nested2flat(row)
@@ -98,4 +96,10 @@ function toCSV(name, arr) {
     }))
 
     //maintain user download workflow?
+    let file = new Blob([flat], { type: 'text/csv;charset=utf-8;' })
+    let link = document.createElement('a')
+
+    link.href = window.URL.createObjectURL(file)
+    link.setAttribute('download', name)
+    link.click()
 }
