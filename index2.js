@@ -57,48 +57,32 @@ function parse(file, rows) {
 
 function toJSON(file, callback) {
     return parse(file, 0).then(results => {
-        console.log("results after first then", results.data);
         return results;
     }).then(results => {
-        //if (results.errors) return handleParseError(results.errors);
         for (var i in results.data) {
             results.data[i] = flat2nested(results.data[i])
-            console.log("datai is", results.data[i]);
         }
         var final = results.data.reverse()
-        return callback(final); //  hand off parsed json to upload function returns a promise
+        return callback(final); 
     }).then(dbresults => {
-        // dbresults will be an array or successes and errors
-        // how are we specifying user action for skip, download csv, etc.
-        if (1 /**download all data including original rows**/) {
-            window.open(file) //just return original file
-        }
-        if (2 /**download only rows with errors**/) {
-            return promise.then(rows => rows.filter(row => row.error))
-        }
-        if (3 /** download rows that were successfully uplaoded*/) {
-            return promise.then(rows => rows.filter(row => row.ok))
-        }
-        return // none of the above
-
+        let file = new Blob([dbresults], { type: 'text/csv;charset=utf-8;' })
+        let link = document.createElement('a')
+        link.href = window.URL.createObjectURL(file)
+        link.setAttribute('download', name)
+        link.click()
     })
 }
 
 
 function toCSV(name, arr) {
     let flat = Papa.unparse(arr.map(row => {
-        //Alphabetically order keys
         var unsorted = nested2flat(row)
         var sorted = {}
-        var fields = Object.keys(unsorted).concat(this.requiredFields).concat(this.optionalFields)
-        fields.sort().forEach(key => sorted[key] = unsorted[key])
+        Object.keys(unsorted).sort().forEach(key => sorted[key] = unsorted[key])
         return sorted
     }))
-
-    //maintain user download workflow?
-    let file = new Blob([flat], { type: 'text/csv;charset=utf-8;' })
+    let file = new Blob([dbresults], { type: 'text/csv;charset=utf-8;' })
     let link = document.createElement('a')
-
     link.href = window.URL.createObjectURL(file)
     link.setAttribute('download', name)
     link.click()
