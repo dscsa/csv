@@ -39,6 +39,12 @@ var nested2flat = function (obj) {
     return flat
 }
 
+function sort(unsorted) {
+  var sorted = {}
+  Object.keys(unsorted).sort().forEach(key => sorted[key] = unsorted[key])
+  return sorted
+}
+
 function parse(file, rows) {
     return new Promise((resolve, reject) => {
         Papa.parse(file, {
@@ -56,32 +62,28 @@ function parse(file, rows) {
 }
 
 function toJSON(file, callback) {
-    return parse(file, 0).then(results => {
-        return results;
-    }).then(results => {
-        for (var i in results.data) {
-            results.data[i] = flat2nested(results.data[i])
-        }
-        var final = results.data.reverse()
-        return callback(final); 
-    }).then(dbresults => {
-        let file = new Blob([dbresults], { type: 'text/csv;charset=utf-8;' })
-        let link = document.createElement('a')
-        link.href = window.URL.createObjectURL(file)
-        link.setAttribute('download', name)
-        link.click()
-    })
+  return parse(file, 0)
+  .then(results => {
+    results = results.data.map(row => flat2nested(row))
+    return callback && callback(results.reverse())
+  })
+  .then(rows => fromJSON('Error '+file.name, rows))
+  .then(_ => {        //in this case make user catch the value
+    throw Error('Callback Returned Rows For Download')
+  }, _ => undefined)  //in this case no rows is most likely a good thing: no errors for download
 }
 
+function fromJSON(name, rows) {
 
-function toCSV(name, arr) {
-    let flat = Papa.unparse(arr.map(row => {
-        var unsorted = nested2flat(row)
-        var sorted = {}
-        Object.keys(unsorted).sort().forEach(key => sorted[key] = unsorted[key])
-        return sorted
-    }))
-    let file = new Blob([dbresults], { type: 'text/csv;charset=utf-8;' })
+    if ( ! Array.isArray(rows)) throw Error('2nd argument must be an array')
+
+    rows = rows.filter(row => row).map(row => sort(nested2flat(row)))
+
+    if ( ! rows.length)
+      throw Error('Array must have at least one value')
+
+    let file = new Blob([Papa.unparse(rows)], {type:'text/csv;charset=utf-8;'})
+
     let link = document.createElement('a')
     link.href = window.URL.createObjectURL(file)
     link.setAttribute('download', name)
