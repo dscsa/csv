@@ -1,11 +1,4 @@
 {
   "name": "csv",
-  "version": "0.0.0",
-  "devDependencies": {
-    "babel-cli": "^6.22.2",
-    "babel-preset-es2015": "^6.22.0"
-  },
-  "scripts": {
-    "test": "babel-node test --presets es2015"
-  }
+  "version": "0.0.0"
 }
