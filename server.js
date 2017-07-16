@@ -91,6 +91,10 @@ function escape(str) {
   if (Array.isArray(str))
     str = JSON.stringify(str)
 
+  if ( ! str.startsWith) {
+    console.log(str, typeof str)
+  }
+
   if (str.startsWith("0")) //excel gets rid of leading 0s unless you have a tab \t or apotrophe
     str = "'"+str
 
