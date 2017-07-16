@@ -40,7 +40,7 @@ function nested2flat(obj) {
 }
 
 function flat2nested(header, row) {
-console.log('csv.toJSON 3', header, row)
+
   let res = {}, fields = row2fields(row)
 
   for (var i in header) {
