@@ -82,18 +82,11 @@ function row2nested(row) {
 
 function escape(str) {
 
-  if (str == null)
-    return str
-
-  if (typeof str == 'number')
+  if (typeof str == 'number' || str == null || str === true)
     return str
 
   if (Array.isArray(str))
     str = JSON.stringify(str)
-
-  if ( ! str.startsWith) {
-    console.log(str, typeof str)
-  }
 
   if (str.startsWith("0")) //excel gets rid of leading 0s unless you have a tab \t or apotrophe
     str = "'"+str
