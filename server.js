@@ -76,7 +76,8 @@ function row2nested(row) {
   //console.log('row2nested')
   if (row.doc) return row.doc
   //Our reduce always have array keys starting with account _id
-  row.value._id = row.key.slice(1)
+  //Change from array to object so we can use the flattened syntax
+  row.value._id = row.key.slice(1).reduce((o, val, i) => Object.assign(o, {[i]: val}), {})
   return row.value
 }
 
