@@ -10,7 +10,7 @@ exports.fromJSON = function(rows, header) {
 
   //If no fixed header, get union of the headers for every row
   //Reduced views have no _id so assign it the group's key instead
-  header = header || flat.reduce(flat2header, ['_id'])
+  header = header || flat.reduce(flat2header, [])
 
   //Collect and get union of all row headers
   //header.map() rectifies any potential differences in property ordering
@@ -75,10 +75,16 @@ function row2fields(row) {
 function row2nested(row) {
   //console.log('row2nested')
   if (row.doc) return row.doc
-  //Our reduce always have array keys starting with account _id
-  //Change from array to object so we can use the flattened syntax
-  row.value._id = row.key.slice(1).reduce((o, val, i) => Object.assign(o, {[i]: val}), {})
-  return row.value
+  //Remove account._id which is always the first value of our array keys
+  //Assign keys as both array and as flattened object since both are helpful in gsheets
+  //Use Object.assign() to put first in property order
+  row.value = Object.assign({key:row.key.slice(1)}, row.value)
+
+  return row.key.slice(1).reduce(array2object, row.value)
+}
+
+function array2object(o, val, i) {
+  return Object.assign(o, {['key.'+i]: val})
 }
 
 function escape(str) {
@@ -128,6 +134,6 @@ function unescape(str) {
 }
 
 function flat2header(header, row) {
-  //console.log('flat2header')
+  console.log('flat2header', header, row)
   return header.concat(Object.keys(row).filter(field => ! header.includes(field)))
 }
