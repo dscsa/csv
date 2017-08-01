@@ -134,6 +134,6 @@ function unescape(str) {
 }
 
 function flat2header(header, row) {
-  console.log('flat2header', header, row)
+  //console.log('flat2header', header, row)
   return header.concat(Object.keys(row).filter(field => ! header.includes(field)))
 }
