@@ -75,6 +75,10 @@ function row2fields(row) {
 function row2nested(row) {
   //console.log('row2nested')
   if (row.doc) return row.doc
+
+  if (typeof row.value != 'object')
+    row.value = {value:row.value}
+
   //Remove account._id which is always the first value of our array keys
   //Assign keys as both array and as flattened object since both are helpful in gsheets
   //Use Object.assign() to put first in property order
