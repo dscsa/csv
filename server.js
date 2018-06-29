@@ -93,7 +93,7 @@ function array2object(o, val, i) {
 
 function escape(str) {
 
-  if (typeof str == 'number' || str == null || str === true)
+  if (typeof str == 'number' || str == null || str === true || str === false)
     return str
 
   if (Array.isArray(str))
