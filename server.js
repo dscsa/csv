@@ -13,11 +13,26 @@ exports.fromJSON = function(rows, header) {
   if (typeof header == 'string')
     header = header.split(',')
   else if ( ! header)
-    header = flat.reduce(flat2header, [])
+    header = flat.reduce(flat2header, []).sort(sortGroupFirstKeysLast)
 
   //Collect and get union of all row headers
   //header.map() rectifies any potential differences in property ordering
   return flat.reduce((csv, row) => csv+'\n'+header.map(i => row[i]), header)
+}
+
+function sortGroupFirstKeysLast(a,b) {
+
+  if (b == 'group') return 1
+  if (a == 'group') return -1
+  
+  let aKey = a.slice(0,3) == 'key'
+  let bKey = b.slice(0,3) == 'key'
+
+  if (aKey && ! bKey) return 1
+  if (bKey && ! aKey) return -1
+
+  if (b<a) return 1
+  if (a<b) return -1
 }
 
 function nested2flat(obj) {
