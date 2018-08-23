@@ -24,7 +24,7 @@ function sortGroupFirstKeysLast(a,b) {
 
   if (b == 'group') return 1
   if (a == 'group') return -1
-  
+
   let aKey = a.slice(0,3) == 'key'
   let bKey = b.slice(0,3) == 'key'
 
@@ -158,6 +158,6 @@ function unescape(str) {
 
 function flat2header(header, row) {
   //console.log('flat2header', header, row)
-  let newFields = Object.keys(row).filter(field => ! header.includes(field))
+  let newFields = Object.keys(row).filter(field => field != null && ! header.includes(field))
   return header.concat(newFields)
 }
