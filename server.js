@@ -121,6 +121,9 @@ function escape(str) {
   if (str.startsWith("0")) //excel gets rid of leading 0s unless you have a tab \t or apotrophe
     str = "'"+str
 
+  if (/^[\d,]+$/.test(str)) //excel gets rid of comma in GSN list 43555,45666 because thinks its an ill-formed number
+    str = "'"+str
+
   if (str.includes(',') || str.includes('"'))   //escape any commas in the field by surronding with quotes.  Excel seems to escape brackets as well
     str = wrapQuotes(str)
 
@@ -146,6 +149,9 @@ function unescape(str) {
 
   if (str.startsWith("'0")) //excel gets rid of leading 0s unless you have a tab \t or apotrophe
     str = str.slice(1)
+
+  if (/^'[\d,]+$/.test(str)) //excel gets rid of comma in GSN list 43555,45666 because thinks its an ill-formed number
+      str = str.slice(1)
 
   if (str.startsWith('"') && str.endsWith('"'))
     str = unwrapQuotes(str)
