@@ -20,6 +20,15 @@ exports.fromJSON = function(rows, header) {
   return flat.reduce((csv, row) => csv+'\n'+header.map(i => row[i]), header)
 }
 
+exports.parseJSON = function(json, default) {
+  try {
+    return json ? JSON.parse(json) : default
+  } catch (e) {
+    console.error('parseJSON error', 'default', default, 'json', json)
+    return default
+  }
+}
+
 function sortGroupFirstKeysLast(a,b) {
 
   if (b == 'group') return 1
@@ -157,7 +166,7 @@ function unescape(str) {
     str = unwrapQuotes(str)
 
   if (str.startsWith('[') && str.endsWith(']'))
-    str = JSON.parse(str)
+    str = exports.parseJSON(str)
 
   return str
 }
