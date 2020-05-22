@@ -20,12 +20,12 @@ exports.fromJSON = function(rows, header) {
   return flat.reduce((csv, row) => csv+'\n'+header.map(i => row[i]), header)
 }
 
-exports.parseJSON = function(json, default) {
+exports.parseJSON = function(json, backup) {
   try {
-    return json ? JSON.parse(json) : default
+    return json ? JSON.parse(json) : backup
   } catch (e) {
-    console.error('parseJSON error', 'default', default, 'json', json)
-    return default
+    console.error('parseJSON error', 'backup', backup, 'json', json)
+    return backup
   }
 }
 
