@@ -103,10 +103,10 @@ function row2nested(row) {
   //console.log('row2nested')
   if (row.doc) return row.doc
 
-  if ( ! row.key) console.log('csv row2nested row malformed', row)
-
   if (typeof row.value != 'object')
     row.value = {value:row.value}
+
+  if ( ! row.key) return row.value
 
   //Assign keys as both array and as flattened object since both are helpful in gsheets
   //Use Object.assign() to put first in property order
