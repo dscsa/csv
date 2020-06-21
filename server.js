@@ -24,7 +24,7 @@ exports.parseJSON = function(json, backup) {
   try {
     return json ? JSON.parse(json) : backup
   } catch (e) {
-    console.error('parseJSON error', 'backup', backup, 'json', json)
+    console.error(new Date().toJSON(), 'parseJSON error', 'backup', backup, 'json', json)
     return backup
   }
 }
