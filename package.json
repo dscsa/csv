@@ -1,4 +1,31 @@
 {
+  "_from": "github:dscsa/csv",
+  "_id": "csv@0.0.0",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/csv",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "git",
+    "raw": "dscsa/csv",
+    "rawSpec": "dscsa/csv",
+    "saveSpec": "github:dscsa/csv",
+    "fetchSpec": null,
+    "gitCommittish": null
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "github:dscsa/csv#8fc4c2d41a05d87b91bc471f1b955e322c20db00",
+  "_spec": "dscsa/csv",
+  "_where": "/dscsa",
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "index.js contains original functional code. index2.js contains work in progress v2.",
   "name": "csv",
+  "scripts": {
+    "start": "node server.js"
+  },
   "version": "0.0.0"
 }
